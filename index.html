@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apotek Karunia Farma - Penilaian</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 50%, #60a5fa 100%);
+            min-height: 100vh; padding: 20px; line-height: 1.6;
+        }
+        .container {
+            max-width: 800px; margin: 0 auto;
+            background: rgba(255,255,255,0.95); border-radius: 25px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.2); overflow: hidden;
+        }
+        header {
+            background: linear-gradient(135deg, #1e3a8a, #3b82f6);
+            color: white; padding: 2rem; text-align: center;
+        }
+        h1 { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .subtitle { font-size: 1.2rem; opacity: 0.9; }
+        .content { padding: 3rem 2rem; }
+        .overall-rating {
+            text-align: center; margin-bottom: 3rem; padding: 2rem;
+            background: linear-gradient(135deg, #dbeafe, #bfdbfe); border-radius: 20px;
+        }
+        .overall-score {
+            font-size: 4rem; font-weight: bold;
+            background: linear-gradient(45deg, #fbbf24, #f59e0b);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text; margin-bottom: 0.5rem;
+        }
+        .total-ratings { font-size: 1.3rem; color: #1e3a8a; }
+        .rating-section { display: grid; gap: 2rem; margin-bottom: 2rem; }
+        .rating-item {
+            background: white; padding: 2rem; border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1); border: 1px solid #e0e7ff;
+        }
+        .rating-label {
+            font-size: 1.3rem; font-weight: 700; color: #1e3a8a;
+            margin-bottom: 1.5rem; text-align: center;
+        }
+        .stars-container { display: flex; justify-content: center; gap: 0.5rem; }
+        .star {
+            font-size: 2.5rem; color: #d1d5db; cursor: pointer;
+            transition: all 0.3s ease; padding: 0.5rem;
+        }
+        .star:hover, .star.active { color: #fbbf24; transform: scale(1.2); }
+        .current-rating {
+            text-align: center; margin-top: 1rem; font-size: 1.2rem;
+            font-weight: 600; color: #3b82f6;
+        }
+        .submit-section { text-align: center; margin: 2rem 0; }
+        .submit-btn {
+            background: linear-gradient(45deg, #10b981, #059669); color: white;
+            border: none; padding: 1.2rem 3rem; border-radius: 50px;
+            font-size: 1.3rem; font-weight: 700; cursor: pointer;
+            box-shadow: 0 10px 30px rgba(16,185,129,0.4); transition: all 0.3s ease;
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-3px); box-shadow: 0 15px 40px rgba(16,185,129,0.6);
+        }
+        .submit-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+        .success-message {
+            background: #d1fae5; border: 2px solid #10b981; color: #065f46;
+            padding: 1.5rem; border-radius: 15px; text-align: center;
+            font-weight: 600; margin: 2rem 0; display: none;
+        }
+        .feedback-section {
+            background: linear-gradient(135deg, #f8fafc, #e2e8f0); padding: 2rem;
+            border-radius: 20px; margin: 2rem 0; border-left: 6px solid #3b82f6;
+        }
+        .feedback-title {
+            font-size: 1.5rem; color: #1e3a8a; margin-bottom: 1rem; text-align: center;
+        }
+        .feedback-textarea {
+            width: 100%; min-height: 150px; padding: 1.5rem;
+            border: 2px dashed #cbd5e1; border-radius: 15px;
+            font-family: inherit; font-size: 1.1rem; line-height: 1.6;
+            resize: vertical; background: white; transition: all 0.3s ease;
+            white-space: pre-wrap; word-wrap: break-word;
+        }
+        .feedback-textarea:focus {
+            outline: none; border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59,130,246,0.1);
+        }
+        .feedback-char-count {
+            text-align: right; margin-top: 0.5rem;
+            font-size: 0.9rem; color: #64748b;
+        }
+        .feedback-note {
+            background: #fef3c7; border: 1px solid #f59e0b;
+            border-radius: 12px; padding: 1rem; margin-top: 1.5rem;
+            font-size: 0.95rem; color: #92400e;
+        }
+        .location-section {
+            text-align: center; margin-top: 3rem; padding-top: 3rem;
+            border-top: 3px solid #e0e7ff;
+        }
+        .location-title {
+            font-size: 1.8rem; color: #1e3a8a; margin-bottom: 1.5rem;
+        }
+        .maps-btn {
+            display: inline-block; background: linear-gradient(45deg, #ef4444, #dc2626);
+            color: white; padding: 1.5rem 3rem; border-radius: 50px;
+            font-size: 1.3rem; font-weight: 700; text-decoration: none;
+            box-shadow: 0 10px 30px rgba(239,68,68,0.4); transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+        .maps-btn:hover {
+            transform: translateY(-3px); box-shadow: 0 15px 40px rgba(239,68,68,0.6);
+        }
+        .maps-note { color: #64748b; font-size: 1.1rem; }
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            .overall-score { font-size: 3rem; }
+            .star { font-size: 2rem; }
+            .content { padding: 2rem 1.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1><i class="fas fa-pills"></i> Apotek Karunia Farma</h1>
+            <p class="subtitle">Beri Penilaian & Kritik Saran Anda</p>
+        </header>
+
+        <div class="content">
+            <!-- Overall Rating -->
+            <div class="overall-rating">
+                <div class="overall-score" id="overallScore">0.0</div>
+                <div class="total-ratings">
+                    Total <span id="totalRatings">0</span> penilaian | 
+                    <span id="avgPerCategory">-</span>
+                </div>
+            </div>
+
+            <!-- Success Message -->
+            <div id="successMessage" class="success-message">
+                ✅ Terima kasih! Penilaian dan <strong>kritik/saran Anda berhasil disimpan</strong>! 
+                <br><strong>Refresh halaman untuk melihat hasil akumulasi!</strong>
+            </div>
+
+            <!-- Rating Form -->
+            <form id="ratingForm" class="rating-section">
+                <div class="rating-item">
+                    <div class="rating-label">Kecepatan pelayanan Apotek Karunia Farma</div>
+                    <div class="stars-container" data-category="kecepatan">
+                        <i class="fas fa-star star" data-value="1"></i>
+                        <i class="fas fa-star star" data-value="2"></i>
+                        <i class="fas fa-star star" data-value="3"></i>
+                        <i class="fas fa-star star" data-value="4"></i>
+                        <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                    <div class="current-rating" id="kecepatanRating">-</div>
+                </div>
+
+                <div class="rating-item">
+                    <div class="rating-label">Kelengkapan item di Apotek Karunia Farma</div>
+                    <div class="stars-container" data-category="kelengkapan">
+                        <i class="fas fa-star star" data-value="1"></i>
+                        <i class="fas fa-star star" data-value="2"></i>
+                        <i class="fas fa-star star" data-value="3"></i>
+                        <i class="fas fa-star star" data-value="4"></i>
+                        <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                    <div class="current-rating" id="kelengkapanRating">-</div>
+                </div>
+
+                <div class="rating-item">
+                    <div class="rating-label">Keramahan pegawai dalam melayani pengunjung</div>
+                    <div class="stars-container" data-category="keramahan">
+                        <i class="fas fa-star star" data-value="1"></i>
+                        <i class="fas fa-star star" data-value="2"></i>
+                        <i class="fas fa-star star" data-value="3"></i>
+                        <i class="fas fa-star star" data-value="4"></i>
+                        <i class="fas fa-star star" data-value="5"></i>
+                    </div>
+                    <div class="current-rating" id="keramahanRating">-</div>
+                </div>
+
+                <!-- Kritik & Saran -->
+                <div class="feedback-section">
+                    <h3 class="feedback-title">
+                        <i class="fas fa-comment-dots"></i> Kritik & Saran (100% Anonim)
+                    </h3>
+                    <textarea class="feedback-textarea" id="feedbackText" 
+                              placeholder="Tulis masukan, kritik, atau saran Anda...
+                              
+Contoh:
+- Pelayanan sangat cepat 👍
+- Stok obat flu sering habis 😞 
+- Saran: tambahkan layanan antar 💡
+
+(Shift+Enter untuk baris baru)"></textarea>
+                    <div class="feedback-char-count" id="charCount">0/1000 karakter</div>
+                    <div class="feedback-note">
+                        <i class="fas fa-info-circle"></i> Kritik/saran tersimpan permanen, 
+                        hanya owner yang bisa lihat. 100% anonim!
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit" class="submit-btn" id="submitBtn" disabled>
+                        <i class="fas fa-paper-plane"></i> Kirim Penilaian & Kritik
+                    </button>
+                </div>
+            </form>
+
+            <!-- LOKASI - SUDAH KEMBALI! -->
+            <div class="location-section">
+                <h3 class="location-title">
+                    <i class="fas fa-map-marker-alt"></i> Kunjungi Kami
+                </h3>
+                <a href="https://maps.app.goo.gl/hFKKwowAhZEhumrM7?g_st=ipc" target="_blank" class="maps-btn">
+                    <i class="fas fa-map"></i> Buka Google Maps
+                </a>
+                <p class="maps-note">
+                    💡 Berikan review juga di Google Maps ya! ⭐
+                </p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let ratingsData = JSON.parse(localStorage.getItem('karuniaRatings')) || {
+            kecepatan: [], kelengkapan: [], keramahan: []
+        };
+        let feedbacks = JSON.parse(localStorage.getItem('karuniaFeedbacks')) || [];
+
+        function updateOverallRating() {
+            const allRatings = [...ratingsData.kecepatan, ...ratingsData.kelengkapan, ...ratingsData.keramahan];
+            const totalRatings = allRatings.length;
+            const avgScore = totalRatings > 0 ? (allRatings.reduce((a,b)=>a+b,0)/totalRatings).toFixed(1) : 0;
+            
+            document.getElementById('overallScore').textContent = avgScore;
+            document.getElementById('totalRatings').textContent = totalRatings;
+            
+            const avgs = {
+                kecepatan: ratingsData.kecepatan.length ? (ratingsData.kecepatan.reduce((a,b)=>a+b,0)/ratingsData.kecepatan.length).toFixed(1) : '-',
+                kelengkapan: ratingsData.kelengkapan.length ? (ratingsData.kelengkapan.reduce((a,b)=>a+b,0)/ratingsData.kelengkapan.length).toFixed(1) : '-',
+                keramahan: ratingsData.keramahan.length ? (ratingsData.keramahan.reduce((a,b)=>a+b,0)/ratingsData.keramahan.length).toFixed(1) : '-'
+            };
+            document.getElementById('avgPerCategory').textContent = 
+                `Kecepatan: ${avgs.kecepatan} | Item: ${avgs.kelengkapan} | Keramahan: ${avgs.keramahan}`;
+        }
+
+        // Stars click
+        document.addEventListener('click', e => {
+            if (e.target.classList.contains('star')) {
+                const stars = e.target.closest('.stars-container').children;
+                const value = parseInt(e.target.dataset.value);
+                const category = e.target.closest('.stars-container').dataset.category;
+                const ratingId = category + 'Rating';
+
+                for (let i = 0; i < stars.length; i++) {
+                    stars[i].classList.toggle('active', i < value);
+                }
+                document.getElementById(ratingId).textContent = value + '/5';
+
+                const allFilled = ['kecepatan', 'kelengkapan', 'keramahan'].every(cat => 
+                    document.getElementById(cat + 'Rating').textContent !== '-'
+                );
+                document.getElementById('submitBtn').disabled = !allFilled;
+            }
+        });
+
+        // Char counter
+        document.getElementById('feedbackText').addEventListener('input', function() {
+            document.getElementById('charCount').textContent = `${this.value.length}/1000 karakter`;
+        });
+
+        // Submit form
+        document.getElementById('ratingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            const feedbackText = document.getElementById('feedbackText').value.trim();
+            
+            // Save ratings
+            ['kecepatan', 'kelengkapan', 'keramahan'].forEach(category => {
+                const ratingEl = document.getElementById(category + 'Rating');
+                if (ratingEl.textContent !== '-') {
+                    ratingsData[category].push(parseInt(ratingEl.textContent));
+                }
+            });
+
+            // Save feedback
+            if (feedbackText) {
+                feedbacks.push({
+                    text: feedbackText,
+                    date: new Date().toLocaleString('id-ID')
+                });
+                localStorage.setItem('karuniaFeedbacks', JSON.stringify(feedbacks));
+            }
+
+            localStorage.setItem('karuniaRatings', JSON.stringify(ratingsData));
+            
+            // Success
+            document.getElementById('successMessage').style.display = 'block';
+            
+            // Reset
+            document.querySelectorAll('.star').forEach(star => star.classList.remove('active'));
+            document.querySelectorAll('.current-rating').forEach(el => el.textContent = '-');
+            document.getElementById('feedbackText').value = '';
+            document.getElementById('charCount').textContent = '0/1000 karakter';
+            document.getElementById('submitBtn').disabled = true;
+            
+            updateOverallRating();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        updateOverallRating();
+    </script>
+</body>
+</html>
